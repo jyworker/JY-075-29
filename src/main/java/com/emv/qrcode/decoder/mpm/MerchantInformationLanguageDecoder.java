@@ -91,7 +91,13 @@ public final class MerchantInformationLanguageDecoder extends DecoderMpm<Merchan
 
       final BiConsumer consumer = entry.getValue();
 
-      consumer.accept(result, DecoderMpm.decode(value, clazz));
+      final Object decodedValue = DecoderMpm.decode(value, clazz);
+
+      if (decodedValue instanceof String) {
+        consumer.accept(result, ((String) decodedValue).trim());
+      } else {
+        consumer.accept(result, decodedValue);
+      }
     }
 
     return result;

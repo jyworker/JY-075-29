@@ -95,4 +95,27 @@ public class MerchantInformationLanguageDecoderTest {
     assertThat(merchantInformationLanguage.toString(), equalTo("0002ZH0102北京0204最佳运输0304abcd"));
   }
 
+  @Test
+  public void testSuccessDecodeWithSpacesInLanguagePreference() throws PresentedModeException {
+    final MerchantInformationLanguage merchantInformationLanguage = DecoderMpm.decode("64160004 ZH 0104BEST", MerchantInformationLanguage.class);
+
+    assertThat(merchantInformationLanguage.getLanguagePreference(), not(nullValue()));
+    assertThat(merchantInformationLanguage.getMerchantName(), not(nullValue()));
+
+    assertThat(merchantInformationLanguage.getLanguagePreference().getTag(), equalTo("00"));
+    assertThat(merchantInformationLanguage.getLanguagePreference().getLength(), equalTo(2));
+    assertThat(merchantInformationLanguage.getLanguagePreference().getValue(), equalTo("ZH"));
+
+    assertThat(merchantInformationLanguage.getMerchantName().getTag(), equalTo("01"));
+    assertThat(merchantInformationLanguage.getMerchantName().getLength(), equalTo(4));
+    assertThat(merchantInformationLanguage.getMerchantName().getValue(), equalTo("BEST"));
+  }
+
+  @Test
+  public void testSuccessDecodeEncodeWithSpacesInLanguagePreference() throws PresentedModeException {
+    final MerchantInformationLanguage merchantInformationLanguage = DecoderMpm.decode("64160004 ZH 0104BEST", MerchantInformationLanguage.class);
+
+    assertThat(merchantInformationLanguage.toString(), equalTo("0002ZH0104BEST"));
+  }
+
 }
