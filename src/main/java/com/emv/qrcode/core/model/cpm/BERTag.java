@@ -1,0 +1,213 @@
+/*
+ * Copyright 2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.emv.qrcode.core.model.cpm;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.codec.binary.Hex;
+
+/**
+ * Represents a BER (Basic Encoding Rules) tag used in Consumer Presented Mode (CPM) QR codes.
+ * A BER tag identifies the type of data in a BER-TLV structure and can span multiple bytes.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/X.690">ITU-T X.690 (BER, CER, DER)</a>
+ */
+public class BERTag implements Serializable {
+
+  private static final long serialVersionUID = -4165695218130492616L;
+
+  private static final int LAST_BYTE_MASK = 0x80;
+  private static final int NEXT_BYTE_BITMASK = 0x1F; // 00011111
+  private static final int CLASS_BITMASK = 0xC0; // 11000000 Tag class: bits 7-8 of the initial octet
+  private static final int TYPE_BITMASK = 0x20; // 00100000 Tag type: bit 6 of the initial octet
+
+  private final byte[] bytes;
+
+  /**
+   * Constructs a BERTag from the specified byte array.
+   *
+   * @param bytes the tag bytes
+   */
+  public BERTag(final byte[] bytes) {
+    this.bytes = bytes;
+  }
+
+  /**
+   * Returns the tag class of this BER tag.
+   *
+   * @return the tag class
+   */
+  public TagClass getTagClass() {
+    return TagClass.entryOf(bytes[0] & CLASS_BITMASK);
+  }
+
+  /**
+   * Returns the tag type of this BER tag.
+   *
+   * @return the tag type
+   */
+  public TagType getTagType() {
+    return TagType.entryOf(bytes[0] & TYPE_BITMASK);
+  }
+
+  /**
+   * Returns the byte array representation of this tag.
+   *
+   * @return the tag bytes
+   */
+  public byte[] getBytes() {
+    return bytes;
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + Arrays.hashCode(bytes);
+    return result;
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof BERTag)) {
+      return false;
+    }
+    final BERTag other = (BERTag) obj;
+    return Arrays.equals(bytes, other.bytes);
+  }
+
+  @Override
+  public String toString() {
+    return Hex.encodeHexString(bytes, false);
+  }
+
+  /**
+   * Checks if the given byte indicates that another byte follows in a multi-byte tag.
+   *
+   * @param value the byte to check
+   * @return true if another byte follows, false otherwise
+   */
+  public static boolean hasNextByte(final byte value) {
+    return NEXT_BYTE_BITMASK == (value & NEXT_BYTE_BITMASK);
+  }
+
+  /**
+   * Checks if the given byte is not the last byte in a multi-byte tag.
+   *
+   * @param value the byte to check
+   * @return true if this is not the last byte, false otherwise
+   */
+  public static boolean isNotLastByte(final byte value) {
+    return LAST_BYTE_MASK == (value & LAST_BYTE_MASK);
+  }
+
+  /**
+   * Enumeration representing BER tag classes.
+   */
+  public enum TagClass {
+
+    UNIVERSAL(0x00), // 00000000
+    APPLICATION(0x40), // 01000000
+    CONTEXT_SPECIFIC(0x80), // 10000000
+    PRIVATE(0xC0); // 11000000
+
+    private static Map<Integer, TagClass> mapInteger = new HashMap<>();
+
+    static {
+      for (final TagClass tagClass : EnumSet.allOf(TagClass.class)) {
+        mapInteger.put(tagClass.getValue(), tagClass);
+      }
+    }
+
+    private final int value;
+
+    private TagClass(final int value) {
+      this.value = value;
+    }
+
+    /**
+     * Returns the numeric value of this tag class.
+     *
+     * @return the numeric value
+     */
+    public int getValue() {
+      return value;
+    }
+
+    /**
+     * Returns the TagClass enum constant for the given value.
+     *
+     * @param value the numeric value
+     * @return the corresponding TagClass
+     */
+    public static TagClass entryOf(final int value) {
+      return mapInteger.get(value);
+    }
+
+  }
+
+  /**
+   * Enumeration representing BER tag types.
+   */
+  public enum TagType {
+
+    PRIMITIVE(0x00), // 00000000
+    CONSTRUCTED(0x20); // 00100000
+
+    private static Map<Integer, TagType> mapInteger = new HashMap<>();
+
+    static {
+      for (final TagType tagType : EnumSet.allOf(TagType.class)) {
+        mapInteger.put(tagType.getValue(), tagType);
+      }
+    }
+
+    private final int value;
+
+    private TagType(final int value) {
+      this.value = value;
+    }
+
+    /**
+     * Returns the numeric value of this tag type.
+     *
+     * @return the numeric value
+     */
+    public int getValue() {
+      return value;
+    }
+
+    /**
+     * Returns the TagType enum constant for the given value.
+     *
+     * @param value the numeric value
+     * @return the corresponding TagType
+     */
+    public static TagType entryOf(final int value) {
+      return mapInteger.get(value);
+    }
+
+  }
+
+}

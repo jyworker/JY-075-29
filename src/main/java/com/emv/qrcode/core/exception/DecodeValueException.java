@@ -1,0 +1,50 @@
+/*
+ * Copyright 2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.emv.qrcode.core.exception;
+
+import java.text.MessageFormat;
+
+/**
+ * Exception thrown when a value cannot be properly decoded due to invalid characters.
+ * This typically occurs when the value contains characters outside the expected hexadecimal range [0-9a-fA-F].
+ */
+public class DecodeValueException extends PresentedModeException {
+
+  private static final long serialVersionUID = 3381404607920642729L;
+
+  private final String value;
+
+  /**
+   * Constructs a new DecodeValueException with the specified invalid value.
+   *
+   * @param value the invalid value that could not be decoded
+   */
+  public DecodeValueException(final String value) {
+    super(MessageFormat.format("Characters outside of the expected range Hex ''[0-9a-fA-F]''. Invalid value ''{0}''", value));
+    this.value = value;
+  }
+
+  /**
+   * Returns the invalid value that caused this exception.
+   *
+   * @return the invalid value
+   */
+  public String getValue() {
+    return value;
+  }
+
+}

@@ -1,0 +1,102 @@
+/*
+ * Copyright 2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.emv.qrcode.model.mpm;
+
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.emv.qrcode.core.model.mpm.TagLengthString;
+import com.emv.qrcode.model.mpm.constants.UnreservedTemplateFieldCodes;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+public class Unreserved implements Serializable {
+
+  private static final long serialVersionUID = -3465559955367881407L;
+
+  // Globally Unique Identifier
+  private TagLengthString globallyUniqueIdentifier;
+
+  // Context Specific Data
+  private final Map<String, TagLengthString> contextSpecificData = new LinkedHashMap<>();
+
+  /**
+   * Constructs an Unreserved with the specified Globally Unique Identifier.
+   *
+   * @param globallyUniqueIdentifier the globally unique identifier value
+   */
+  public Unreserved(final String globallyUniqueIdentifier) {
+    setGloballyUniqueIdentifier(globallyUniqueIdentifier);
+  }
+
+  /**
+   * Sets the Globally Unique Identifier (tag 00).
+   *
+   * @param globallyUniqueIdentifier the globally unique identifier value
+   */
+  public final void setGloballyUniqueIdentifier(final String globallyUniqueIdentifier) {
+    this.globallyUniqueIdentifier = new TagLengthString(UnreservedTemplateFieldCodes.ID_GLOBALLY_UNIQUE_IDENTIFIER, globallyUniqueIdentifier);
+  }
+
+  /**
+   * Adds a context-specific data field.
+   *
+   * @param tagLengthString the TagLengthString to add
+   */
+  public final void addContextSpecificData(final TagLengthString tagLengthString) {
+    contextSpecificData.put(tagLengthString.getTag(), tagLengthString);
+  }
+
+  /**
+   * Adds a context-specific data field with the specified tag and value.
+   *
+   * @param tag the field tag
+   * @param value the field value
+   */
+  public final void addContextSpecificData(final String tag, final String value) {
+    contextSpecificData.put(tag, new TagLengthString(tag, value));
+  }
+
+  @Override
+  public String toString() {
+
+    final StringBuilder sb = new StringBuilder();
+
+    Optional.ofNullable(globallyUniqueIdentifier).ifPresent(tlv -> sb.append(tlv.toString()));
+
+    for (final Entry<String, TagLengthString> entry : contextSpecificData.entrySet()) {
+      Optional.ofNullable(entry.getValue()).ifPresent(tlv -> sb.append(tlv.toString()));
+    }
+
+    final String string = sb.toString();
+
+    if (StringUtils.isBlank(string)) {
+      return StringUtils.EMPTY;
+    }
+
+    return string;
+  }
+
+}

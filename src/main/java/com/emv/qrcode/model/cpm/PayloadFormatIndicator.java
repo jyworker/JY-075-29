@@ -1,0 +1,39 @@
+/*
+ * Copyright 2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.emv.qrcode.model.cpm;
+
+import com.emv.qrcode.core.model.cpm.BERTLAlphanumeric;
+import com.emv.qrcode.model.cpm.constants.ConsumerPresentedModeFieldCodes;
+
+/**
+ * Represents the Payload Format Indicator field in a Consumer Presented Mode (CPM) QR code.
+ * This field identifies the version of the CPM specification being used (default: "CPV01").
+ *
+ * @see BERTLAlphanumeric
+ */
+public class PayloadFormatIndicator extends BERTLAlphanumeric {
+
+  private static final long serialVersionUID = 780284119561670846L;
+
+  /**
+   * Constructs a PayloadFormatIndicator with the default value "CPV01".
+   */
+  public PayloadFormatIndicator() {
+    super(ConsumerPresentedModeFieldCodes.ID_PAYLOAD_FORMAT_INDICATOR, "CPV01");
+  }
+
+}

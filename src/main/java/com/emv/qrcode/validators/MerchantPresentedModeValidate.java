@@ -1,0 +1,52 @@
+/*
+ * Copyright 2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.emv.qrcode.validators;
+
+import com.emv.qrcode.model.mpm.MerchantPresentedMode;
+import com.emv.qrcode.validators.mpm.MerchantPresentedModeValidator;
+
+import br.com.fluentvalidator.Validator;
+import br.com.fluentvalidator.context.ValidationResult;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+/**
+ * Validator class for MerchantPresentedMode (MPM) QR code data. This class uses
+ * FluentValidator to validate MPM data structures.
+ *
+ * @see MerchantPresentedMode
+ * @see MerchantPresentedModeValidator
+ * @see br.com.fluentvalidator.Validator
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class MerchantPresentedModeValidate {
+
+  private static final Validator<MerchantPresentedMode> VALIDATOR = new MerchantPresentedModeValidator();
+
+  /**
+   * Validates a MerchantPresentedMode instance using the configured validator.
+   *
+   * @param instance the MerchantPresentedMode instance to validate (must not be
+   *                 null)
+   * @return the validation result containing any validation errors
+   * @see MerchantPresentedModeValidator
+   */
+  public static final ValidationResult validate(final MerchantPresentedMode instance) {
+    return VALIDATOR.validate(instance);
+  }
+
+}

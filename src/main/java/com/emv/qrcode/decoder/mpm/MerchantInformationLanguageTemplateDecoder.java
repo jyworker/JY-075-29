@@ -1,0 +1,56 @@
+/*
+ * Copyright 2019 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.emv.qrcode.decoder.mpm;
+
+import com.emv.qrcode.core.exception.PresentedModeException;
+import com.emv.qrcode.model.mpm.MerchantInformationLanguage;
+import com.emv.qrcode.model.mpm.MerchantInformationLanguageTemplate;
+
+// @formatter:off
+/**
+ * Decoder for parsing Merchant Information Language Template from MPM QR code strings.
+ * This decoder extracts the MerchantInformationLanguage value from the template.
+ *
+ * @see DecoderMpm
+ * @see MerchantInformationLanguageTemplate
+ */
+public final class MerchantInformationLanguageTemplateDecoder extends DecoderMpm<MerchantInformationLanguageTemplate> {
+
+  /**
+   * Constructs a MerchantInformationLanguageTemplateDecoder with the specified source string.
+   *
+   * @param source the MPM QR code string to decode
+   */
+  public MerchantInformationLanguageTemplateDecoder(final String source) {
+    super(source);
+  }
+
+  @Override
+  protected MerchantInformationLanguageTemplate decode() throws PresentedModeException {
+    final MerchantInformationLanguageTemplate result = new MerchantInformationLanguageTemplate();
+
+    while(iterator.hasNext()) {
+      final String value = iterator.next();
+      result.setValue(DecoderMpm.decode(value, MerchantInformationLanguage.class));
+    }
+
+    return result;
+  }
+
+}
+
+// @formatter:on
